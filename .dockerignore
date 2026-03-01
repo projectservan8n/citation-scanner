@@ -1,0 +1,5 @@
+node_modules
+.claude
+data/scans/*.json
+.env
+.git
