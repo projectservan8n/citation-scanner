@@ -1,0 +1,1433 @@
+[
+  {
+    "id": "google-business-profile",
+    "name": "Google Business Profile",
+    "url": "https://www.google.com/maps",
+    "searchUrlTemplate": "https://www.google.com/maps/search/{{business}}+{{location}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "yelp",
+    "name": "Yelp",
+    "url": "https://www.yelp.com",
+    "searchUrlTemplate": "https://www.yelp.com/search?find_desc={{business}}&find_loc={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "yellow-pages",
+    "name": "Yellow Pages",
+    "url": "https://www.yellowpages.com",
+    "searchUrlTemplate": "https://www.yellowpages.com/search?search_terms={{business}}&geo_location_terms={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "bing-places",
+    "name": "Bing Places",
+    "url": "https://www.bing.com",
+    "searchUrlTemplate": "https://www.bing.com/maps?q={{business}}+{{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "better-business-bureau",
+    "name": "Better Business Bureau",
+    "url": "https://www.bbb.org",
+    "searchUrlTemplate": "https://www.bbb.org/search?find_country=USA&find_text={{business}}&find_loc={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "manta",
+    "name": "Manta",
+    "url": "https://www.manta.com",
+    "searchUrlTemplate": "https://www.manta.com/search?search={{business}}&location={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "hotfrog",
+    "name": "Hotfrog",
+    "url": "https://www.hotfrog.com",
+    "searchUrlTemplate": "https://www.hotfrog.com/search/{{location}}/{{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "foursquare",
+    "name": "Foursquare",
+    "url": "https://foursquare.com",
+    "searchUrlTemplate": "https://foursquare.com/explore?q={{business}}&near={{location}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "superpages",
+    "name": "Superpages",
+    "url": "https://www.superpages.com",
+    "searchUrlTemplate": "https://www.superpages.com/search?search_terms={{business}}&geo_location_terms={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "chamberofcommerce-com",
+    "name": "ChamberOfCommerce.com",
+    "url": "https://www.chamberofcommerce.com",
+    "searchUrlTemplate": "https://www.chamberofcommerce.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "merchant-circle",
+    "name": "MerchantCircle",
+    "url": "https://www.merchantcircle.com",
+    "searchUrlTemplate": "https://www.merchantcircle.com/search?q={{business}}&l={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "show-me-local",
+    "name": "ShowMeLocal",
+    "url": "https://www.showmelocal.com",
+    "searchUrlTemplate": "https://www.showmelocal.com/search.aspx?q={{business}}&l={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "whitepages",
+    "name": "Whitepages",
+    "url": "https://www.whitepages.com",
+    "searchUrlTemplate": "https://www.whitepages.com/business/search?search[name]={{business}}&search[where]={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "thumbtack",
+    "name": "Thumbtack",
+    "url": "https://www.thumbtack.com",
+    "searchUrlTemplate": "https://www.thumbtack.com/search/?q={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "angi",
+    "name": "Angi",
+    "url": "https://www.angi.com",
+    "searchUrlTemplate": "https://www.angi.com/companylist/search.htm?keyword={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "dnb",
+    "name": "D&B / DNB",
+    "url": "https://www.dnb.com",
+    "searchUrlTemplate": "https://www.dnb.com/business-directory.html?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "clutch",
+    "name": "Clutch",
+    "url": "https://clutch.co",
+    "searchUrlTemplate": "https://clutch.co/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "trustpilot",
+    "name": "Trustpilot",
+    "url": "https://www.trustpilot.com",
+    "searchUrlTemplate": "https://www.trustpilot.com/search?query={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "birdeye",
+    "name": "Birdeye",
+    "url": "https://reviews.birdeye.com",
+    "searchUrlTemplate": "https://reviews.birdeye.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "provenexpert",
+    "name": "ProvenExpert",
+    "url": "https://www.provenexpert.com",
+    "searchUrlTemplate": "https://www.provenexpert.com/en-us/search/?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "patch",
+    "name": "Patch",
+    "url": "https://patch.com",
+    "searchUrlTemplate": "https://patch.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "brownbook",
+    "name": "Brownbook",
+    "url": "https://www.brownbook.net",
+    "searchUrlTemplate": "https://www.brownbook.net/search/?what={{business}}&where={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "callupcontact",
+    "name": "Callupcontact",
+    "url": "https://www.callupcontact.com",
+    "searchUrlTemplate": "https://www.callupcontact.com/search/?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "cybo",
+    "name": "Cybo",
+    "url": "https://www.cybo.com",
+    "searchUrlTemplate": "https://www.cybo.com/search/?q={{business}}&l={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "goodfirms",
+    "name": "GoodFirms",
+    "url": "https://www.goodfirms.co",
+    "searchUrlTemplate": "https://www.goodfirms.co/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "about-me",
+    "name": "About.me",
+    "url": "https://about.me",
+    "searchUrlTemplate": "https://about.me/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "three-best-rated",
+    "name": "ThreeBestRated",
+    "url": "https://threebestrated.com",
+    "searchUrlTemplate": "https://threebestrated.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "city-local-pro",
+    "name": "CityLocalPro",
+    "url": "https://www.citylocalpro.com",
+    "searchUrlTemplate": "https://www.citylocalpro.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "trust-vetted",
+    "name": "TrustVetted",
+    "url": "https://www.trustvetted.com",
+    "searchUrlTemplate": "https://www.trustvetted.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ontoplist",
+    "name": "OnTopList",
+    "url": "https://www.ontoplist.com",
+    "searchUrlTemplate": "https://www.ontoplist.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "top-rated-local",
+    "name": "TopRatedLocal",
+    "url": "https://www.topratedlocal.com",
+    "searchUrlTemplate": "https://www.topratedlocal.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "2findlocal",
+    "name": "2FindLocal",
+    "url": "https://www.2findlocal.com",
+    "searchUrlTemplate": "https://www.2findlocal.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "sitelike",
+    "name": "SiteLike",
+    "url": "https://www.sitelike.org",
+    "searchUrlTemplate": "https://www.sitelike.org/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "find-us-here",
+    "name": "Find-Us-Here",
+    "url": "https://www.find-us-here.com",
+    "searchUrlTemplate": "https://www.find-us-here.com/search?q={{business}}&l={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "opendi",
+    "name": "Opendi",
+    "url": "https://www.opendi.us",
+    "searchUrlTemplate": "https://www.opendi.us/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "tuugo",
+    "name": "Tuugo",
+    "url": "https://www.tuugo.us",
+    "searchUrlTemplate": "https://www.tuugo.us/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ibegin",
+    "name": "iBegin",
+    "url": "https://www.ibegin.com",
+    "searchUrlTemplate": "https://www.ibegin.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ezlocal",
+    "name": "EZLocal",
+    "url": "https://www.ezlocal.com",
+    "searchUrlTemplate": "https://www.ezlocal.com/search?q={{business}}&l={{location}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "golocal247",
+    "name": "GoLocal247",
+    "url": "https://www.golocal247.com",
+    "searchUrlTemplate": "https://www.golocal247.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "n49",
+    "name": "N49",
+    "url": "https://www.n49.com",
+    "searchUrlTemplate": "https://www.n49.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "sitejabber",
+    "name": "SiteJabber",
+    "url": "https://www.sitejabber.com",
+    "searchUrlTemplate": "https://www.sitejabber.com/search?query={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "somuch",
+    "name": "Somuch",
+    "url": "https://www.somuch.com",
+    "searchUrlTemplate": "https://www.somuch.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "jasmine-directory",
+    "name": "Jasmine Directory",
+    "url": "https://www.jasminedirectory.com",
+    "searchUrlTemplate": "https://www.jasminedirectory.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "botw",
+    "name": "BOTW",
+    "url": "https://botw.org",
+    "searchUrlTemplate": "https://botw.org/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "data-axle",
+    "name": "Data Axle",
+    "url": "https://www.data-axle.com",
+    "searchUrlTemplate": "https://www.data-axle.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "brandfetch",
+    "name": "Brandfetch",
+    "url": "https://brandfetch.com",
+    "searchUrlTemplate": "https://brandfetch.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "gravatar",
+    "name": "Gravatar",
+    "url": "https://gravatar.com",
+    "searchUrlTemplate": "https://gravatar.com/profiles/{{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "apsense",
+    "name": "APSense",
+    "url": "https://www.apsense.com",
+    "searchUrlTemplate": "https://www.apsense.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "contactout",
+    "name": "ContactOut",
+    "url": "https://contactout.com",
+    "searchUrlTemplate": "https://contactout.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "featured",
+    "name": "Featured",
+    "url": "https://featured.com",
+    "searchUrlTemplate": "https://featured.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "bunity",
+    "name": "Bunity",
+    "url": "https://www.bunity.com",
+    "searchUrlTemplate": "https://www.bunity.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "crunchbase",
+    "name": "Crunchbase",
+    "url": "https://www.crunchbase.com",
+    "searchUrlTemplate": "https://www.crunchbase.com/textsearch?q={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "glassdoor",
+    "name": "Glassdoor",
+    "url": "https://www.glassdoor.com",
+    "searchUrlTemplate": "https://www.glassdoor.com/Reviews/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "generalbar",
+    "name": "GeneralBar",
+    "url": "https://www.generalbar.com",
+    "searchUrlTemplate": "https://www.generalbar.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "nextdoor",
+    "name": "Nextdoor",
+    "url": "https://nextdoor.com",
+    "searchUrlTemplate": "https://nextdoor.com/search/?q={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "alignable",
+    "name": "Alignable",
+    "url": "https://www.alignable.com",
+    "searchUrlTemplate": "https://www.alignable.com/search?q={{business}}",
+    "category": "General",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "avvo",
+    "name": "Avvo",
+    "url": "https://www.avvo.com",
+    "searchUrlTemplate": "https://www.avvo.com/search/lawyer_search?q={{business}}&loc={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "findlaw",
+    "name": "FindLaw",
+    "url": "https://www.findlaw.com",
+    "searchUrlTemplate": "https://lawyers.findlaw.com/search?q={{business}}&location={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "justia",
+    "name": "Justia",
+    "url": "https://www.justia.com",
+    "searchUrlTemplate": "https://lawyers.justia.com/search?q={{business}}&location={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "martindale",
+    "name": "Martindale",
+    "url": "https://www.martindale.com",
+    "searchUrlTemplate": "https://www.martindale.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "lawyers-com",
+    "name": "Lawyers.com",
+    "url": "https://www.lawyers.com",
+    "searchUrlTemplate": "https://www.lawyers.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "super-lawyers",
+    "name": "Super Lawyers",
+    "url": "https://www.superlawyers.com",
+    "searchUrlTemplate": "https://www.superlawyers.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "hg-org",
+    "name": "HG.org",
+    "url": "https://www.hg.org",
+    "searchUrlTemplate": "https://www.hg.org/find-lawyers.html?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawyer-legion",
+    "name": "LawyerLegion",
+    "url": "https://www.lawyerlegion.com",
+    "searchUrlTemplate": "https://www.lawyerlegion.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "uslegal",
+    "name": "USLegal",
+    "url": "https://lawyers.uslegal.com",
+    "searchUrlTemplate": "https://lawyers.uslegal.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawlink",
+    "name": "LawLink",
+    "url": "https://www.lawlink.com",
+    "searchUrlTemplate": "https://www.lawlink.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawyerland",
+    "name": "LawyerLand",
+    "url": "https://www.lawyerland.com",
+    "searchUrlTemplate": "https://www.lawyerland.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "attorney-yellow-pages",
+    "name": "AttorneyYellowPages",
+    "url": "https://www.attorneyyellowpages.com",
+    "searchUrlTemplate": "https://www.attorneyyellowpages.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "law-leaders",
+    "name": "LawLeaders",
+    "url": "https://www.lawleaders.com",
+    "searchUrlTemplate": "https://www.lawleaders.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "legal-reach",
+    "name": "LegalReach",
+    "url": "https://www.legalreach.com",
+    "searchUrlTemplate": "https://www.legalreach.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "law-server",
+    "name": "LawServer",
+    "url": "https://www.lawserver.com",
+    "searchUrlTemplate": "https://www.lawserver.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "best-law-firms",
+    "name": "BestLawFirms",
+    "url": "https://www.bestlawfirms.com",
+    "searchUrlTemplate": "https://www.bestlawfirms.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "expertise",
+    "name": "Expertise",
+    "url": "https://www.expertise.com",
+    "searchUrlTemplate": "https://www.expertise.com/search?q={{business}}&location={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawinfo",
+    "name": "LawInfo",
+    "url": "https://www.lawinfo.com",
+    "searchUrlTemplate": "https://www.lawinfo.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "nolo",
+    "name": "Nolo",
+    "url": "https://www.nolo.com",
+    "searchUrlTemplate": "https://www.nolo.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "cornell-law",
+    "name": "Cornell Law",
+    "url": "https://www.law.cornell.edu",
+    "searchUrlTemplate": "https://lawyers.law.cornell.edu/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "oyez-lawyers",
+    "name": "Oyez Lawyers",
+    "url": "https://www.oyez.org",
+    "searchUrlTemplate": "https://lawyers.oyez.org/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawyers-corner",
+    "name": "LawyersCorner",
+    "url": "https://www.lawyerscorner.com",
+    "searchUrlTemplate": "https://www.lawyerscorner.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "abogado",
+    "name": "Abogado",
+    "url": "https://www.abogado.com",
+    "searchUrlTemplate": "https://www.abogado.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "el-abogado",
+    "name": "ElAbogado",
+    "url": "https://usa.elabogado.com",
+    "searchUrlTemplate": "https://usa.elabogado.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "los-abogados",
+    "name": "LosAbogados",
+    "url": "https://www.losabogados.com",
+    "searchUrlTemplate": "https://www.losabogados.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "attorney-at-law-mag",
+    "name": "AttorneyAtLawMag",
+    "url": "https://www.attorneyatlawmagazine.com",
+    "searchUrlTemplate": "https://www.attorneyatlawmagazine.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "best-lawyers",
+    "name": "BestLawyers",
+    "url": "https://www.bestlawyers.com",
+    "searchUrlTemplate": "https://www.bestlawyers.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "mediate",
+    "name": "Mediate",
+    "url": "https://www.mediate.com",
+    "searchUrlTemplate": "https://www.mediate.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "personal-injury-warriors",
+    "name": "PersonalInjuryWarriors",
+    "url": "https://www.personalinjurywarriors.com",
+    "searchUrlTemplate": "https://www.personalinjurywarriors.com/search?q={{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "healthgrades",
+    "name": "Healthgrades",
+    "url": "https://www.healthgrades.com",
+    "searchUrlTemplate": "https://www.healthgrades.com/find-a-doctor?what={{business}}&where={{location}}",
+    "category": "Medical",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ratemds",
+    "name": "RateMDs",
+    "url": "https://www.ratemds.com",
+    "searchUrlTemplate": "https://www.ratemds.com/doctor-ratings/?q={{business}}&loc={{location}}",
+    "category": "Medical",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "doximity",
+    "name": "Doximity",
+    "url": "https://www.doximity.com",
+    "searchUrlTemplate": "https://www.doximity.com/pub/search?q={{business}}",
+    "category": "Medical",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "vitals",
+    "name": "Vitals",
+    "url": "https://www.vitals.com",
+    "searchUrlTemplate": "https://www.vitals.com/doctors/search?q={{business}}",
+    "category": "Medical",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "zocdoc",
+    "name": "ZocDoc",
+    "url": "https://www.zocdoc.com",
+    "searchUrlTemplate": "https://www.zocdoc.com/search?q={{business}}&address={{location}}",
+    "category": "Medical",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "webmd",
+    "name": "WebMD",
+    "url": "https://doctor.webmd.com",
+    "searchUrlTemplate": "https://doctor.webmd.com/doctor/search?q={{business}}",
+    "category": "Medical",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "the-knot",
+    "name": "The Knot",
+    "url": "https://www.theknot.com",
+    "searchUrlTemplate": "https://www.theknot.com/marketplace/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "weddingwire",
+    "name": "WeddingWire",
+    "url": "https://www.weddingwire.com",
+    "searchUrlTemplate": "https://www.weddingwire.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "partyslate",
+    "name": "PartySlate",
+    "url": "https://www.partyslate.com",
+    "searchUrlTemplate": "https://www.partyslate.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "eventective",
+    "name": "Eventective",
+    "url": "https://www.eventective.com",
+    "searchUrlTemplate": "https://www.eventective.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "carats-and-cake",
+    "name": "CaratsAndCake",
+    "url": "https://www.caratsandcake.com",
+    "searchUrlTemplate": "https://www.caratsandcake.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "style-me-pretty",
+    "name": "StyleMePretty",
+    "url": "https://www.stylemepretty.com",
+    "searchUrlTemplate": "https://www.stylemepretty.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "heart-of-nc-weddings",
+    "name": "HeartOfNCWeddings",
+    "url": "https://www.heartofncweddings.com",
+    "searchUrlTemplate": "https://www.heartofncweddings.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "junebug-weddings",
+    "name": "JunebugWeddings",
+    "url": "https://junebugweddings.com",
+    "searchUrlTemplate": "https://junebugweddings.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "zola",
+    "name": "Zola",
+    "url": "https://www.zola.com",
+    "searchUrlTemplate": "https://www.zola.com/wedding-vendors/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "peerspace",
+    "name": "Peerspace",
+    "url": "https://www.peerspace.com",
+    "searchUrlTemplate": "https://www.peerspace.com/s?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "playwright",
+    "active": true
+  },
+  {
+    "id": "here-comes-the-guide",
+    "name": "HereComesTheGuide",
+    "url": "https://www.herecomestheguide.com",
+    "searchUrlTemplate": "https://www.herecomestheguide.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "wedding-spot",
+    "name": "WeddingSpot",
+    "url": "https://www.wedding-spot.com",
+    "searchUrlTemplate": "https://www.wedding-spot.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "equally-wed",
+    "name": "EquallyWed",
+    "url": "https://www.equallywed.com",
+    "searchUrlTemplate": "https://www.equallywed.com/search?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "cvent",
+    "name": "Cvent",
+    "url": "https://www.cvent.com",
+    "searchUrlTemplate": "https://www.cvent.com/rfp/venue-search.aspx?q={{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "boise-chamber",
+    "name": "BoiseChamber",
+    "url": "https://www.boisechamber.org",
+    "searchUrlTemplate": "https://www.boisechamber.org/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "meridian-chamber",
+    "name": "MeridianChamber",
+    "url": "https://business.meridianchamber.org",
+    "searchUrlTemplate": "https://business.meridianchamber.org/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "tucson-chamber",
+    "name": "TucsonChamber",
+    "url": "https://business.tucsonchamber.org",
+    "searchUrlTemplate": "https://business.tucsonchamber.org/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "phoenix-chamber",
+    "name": "PhoenixChamber",
+    "url": "https://www.phoenixchamber.com",
+    "searchUrlTemplate": "https://www.phoenixchamber.com/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "chandler-chamber",
+    "name": "ChandlerChamber",
+    "url": "https://www.chandlerchamber.com",
+    "searchUrlTemplate": "https://www.chandlerchamber.com/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "mesa-chamber",
+    "name": "MesaChamber",
+    "url": "https://www.mesachamber.org",
+    "searchUrlTemplate": "https://www.mesachamber.org/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "gilbert-chamber",
+    "name": "GilbertChamber",
+    "url": "https://www.gilbertaz.com",
+    "searchUrlTemplate": "https://www.gilbertaz.com/search?q={{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "totally-boise",
+    "name": "TotallyBoise",
+    "url": "https://www.totallyboise.com",
+    "searchUrlTemplate": "https://www.totallyboise.com/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "buy-idaho",
+    "name": "BuyIdaho",
+    "url": "https://www.buyidaho.org",
+    "searchUrlTemplate": "https://www.buyidaho.org/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "phoenix-mag",
+    "name": "PhoenixMag",
+    "url": "https://www.phoenixmag.com",
+    "searchUrlTemplate": "https://www.phoenixmag.com/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "downtown-raleigh",
+    "name": "DowntownRaleigh",
+    "url": "https://www.downtownraleigh.org",
+    "searchUrlTemplate": "https://www.downtownraleigh.org/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "local-first-az",
+    "name": "LocalFirstAZ",
+    "url": "https://www.localfirstaz.com",
+    "searchUrlTemplate": "https://www.localfirstaz.com/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "scottsdale-living",
+    "name": "The Scottsdale Living",
+    "url": "https://www.thescottsdaleliving.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:thescottsdaleliving.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "arizona-bizhwy",
+    "name": "Arizona BizHwy",
+    "url": "https://arizona.bizhwy.com",
+    "searchUrlTemplate": "https://arizona.bizhwy.com/search?q={{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "phxmom",
+    "name": "PHXMom",
+    "url": "https://www.phxmom.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:phxmom.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ral-today",
+    "name": "RALtoday",
+    "url": "https://raltoday.6amcity.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:raltoday.6amcity.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "our-santa-ana",
+    "name": "Our Santa Ana",
+    "url": "https://www.oursantaana.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:oursantaana.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "inland-empire-lawyers",
+    "name": "Inland Empire Lawyers",
+    "url": "https://www.inlandempirelawyers.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:inlandempirelawyers.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "its-a-boise-thing",
+    "name": "It's a Boise Thing",
+    "url": "https://www.itsaboisething.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:itsaboisething.com+{{business}}",
+    "category": "Regional",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "asba",
+    "name": "Arizona Small Business Association",
+    "url": "https://www.asba.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:asba.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "casa-grande-chamber",
+    "name": "Casa Grande Chamber of Commerce",
+    "url": "https://www.casagrandechamber.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:casagrandechamber.org+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "fountain-hills-chamber",
+    "name": "Fountain Hills Chamber of Commerce",
+    "url": "https://www.fhchamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:fhchamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "gci-idaho-chamber",
+    "name": "Greater Canyon Idaho Chamber",
+    "url": "https://www.gcidahochamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:gcidahochamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "bullhead-area-chamber",
+    "name": "Bullhead Area Chamber of Commerce",
+    "url": "https://www.bullheadareachamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:bullheadareachamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "buckeye-valley-chamber",
+    "name": "Buckeye Valley Chamber of Commerce",
+    "url": "https://www.buckeyevalleychamber.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:buckeyevalleychamber.org+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "cottonwood-chamber",
+    "name": "Cottonwood Chamber of Commerce",
+    "url": "https://www.cottonwoodchamberaz.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:cottonwoodchamberaz.org+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "carefree-cave-creek-chamber",
+    "name": "Carefree Cave Creek Chamber",
+    "url": "https://www.carefreecavecreek.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:carefreecavecreek.org+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "apache-junction-chamber",
+    "name": "Apache Junction Chamber of Commerce",
+    "url": "https://www.ajchamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:ajchamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "greater-vail-chamber",
+    "name": "Greater Vail Chamber of Commerce",
+    "url": "https://www.greatervailchamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:greatervailchamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "grand-canyon-cvb",
+    "name": "Grand Canyon CVB",
+    "url": "https://www.grandcanyoncvb.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:grandcanyoncvb.org+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "flagstaff-chamber",
+    "name": "Flagstaff Chamber of Commerce",
+    "url": "https://www.flagstaffchamber.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:flagstaffchamber.com+{{business}}",
+    "category": "Chamber",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "inc-verified",
+    "name": "Inc.com Verified",
+    "url": "https://www.inc.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:inc.com+{{business}}",
+    "category": "Other",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "thetoptens",
+    "name": "TheTopTens",
+    "url": "https://www.thetoptens.com",
+    "searchUrlTemplate": "https://www.thetoptens.com/search/?q={{business}}",
+    "category": "Other",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lexblog",
+    "name": "LexBlog",
+    "url": "https://www.lexblog.com",
+    "searchUrlTemplate": "https://www.lexblog.com/?s={{business}}",
+    "category": "Other",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "redmine",
+    "name": "Redmine",
+    "url": "https://www.redmine.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:redmine.org+{{business}}",
+    "category": "Other",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "jurist",
+    "name": "JURIST",
+    "url": "https://www.jurist.org",
+    "searchUrlTemplate": "https://www.jurist.org/?s={{business}}",
+    "category": "Other",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawreferralconnect",
+    "name": "Law Referral Connect",
+    "url": "https://www.lawreferralconnect.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:lawreferralconnect.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "personalinjurywarriors",
+    "name": "Personal Injury Warriors",
+    "url": "https://www.personalinjurywarriors.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:personalinjurywarriors.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "findacaraccidentattorney",
+    "name": "Find a Car Accident Attorney",
+    "url": "https://www.findacaraccidentattorney.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:findacaraccidentattorney.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "lawyercorner",
+    "name": "LawyerCorner",
+    "url": "https://www.lawyercorner.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:lawyercorner.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "litcounsel",
+    "name": "LitCounsel",
+    "url": "https://www.litcounsel.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:litcounsel.org+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "naopia",
+    "name": "NAOPIA",
+    "url": "https://www.naopia.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:naopia.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "listalegal",
+    "name": "ListaLegal",
+    "url": "https://www.listalegal.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:listalegal.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "azaj",
+    "name": "AZAJ",
+    "url": "https://www.azaj.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:azaj.org+{{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "statelawyers",
+    "name": "StateLawyers",
+    "url": "https://www.statelawyers.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:statelawyers.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "halt",
+    "name": "HALT",
+    "url": "https://www.halt.org",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:halt.org+{{business}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "justgreatlawyers",
+    "name": "JustGreatLawyers",
+    "url": "https://www.justgreatlawyers.com",
+    "searchUrlTemplate": "https://www.justgreatlawyers.com/search?q={{business}}&l={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "ncdd",
+    "name": "NCDD",
+    "url": "https://www.ncdd.com",
+    "searchUrlTemplate": "https://www.ncdd.com/find-an-attorney?q={{business}}&l={{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "legaladvice",
+    "name": "LegalAdvice.com",
+    "url": "https://www.legaladvice.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:legaladvice.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "personalinjurylaw-guru",
+    "name": "PersonalInjuryLaw.guru",
+    "url": "https://www.personalinjurylaw.guru",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:personalinjurylaw.guru+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "hispaniclawyersnetwork",
+    "name": "Hispanic Lawyers Network",
+    "url": "https://www.hispaniclawyersnetwork.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:hispaniclawyersnetwork.com+{{business}}+{{location}}",
+    "category": "Legal",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "destination-wedding-directory",
+    "name": "Destination Wedding Directory",
+    "url": "https://www.destinationweddingdirectory.co",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:destinationweddingdirectory.co+{{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "carolina-wedding-partners",
+    "name": "Carolina Wedding Partners",
+    "url": "https://www.carolinaweddingpartners.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:carolinaweddingpartners.com+{{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  },
+  {
+    "id": "forever-and-company",
+    "name": "Forever and Company",
+    "url": "https://www.foreverandcompany.com",
+    "searchUrlTemplate": "https://www.google.com/search?q=site:foreverandcompany.com+{{business}}",
+    "category": "Wedding/Venue",
+    "checkMethod": "hybrid",
+    "active": true
+  }
+]

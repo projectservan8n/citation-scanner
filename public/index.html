@@ -3,449 +3,1193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Citation Scanner — Opus Automations</title>
+  <title>Opus Scanner — Citation Checker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Outfit', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            surface: { 950: '#08090c', 900: '#0f1117', 800: '#161822', 700: '#1e2130' },
+            accent: { DEFAULT: '#6366f1', light: '#818cf8', dim: '#4f46e5', glow: '#6366f133' },
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.4s ease forwards',
+            'fade-in': 'fadeIn 0.3s ease forwards',
+            'slide-in': 'slideIn 0.3s ease forwards',
+            'pulse-dot': 'pulseDot 1.5s ease-in-out infinite',
+            'spin-slow': 'spin 3s linear infinite',
+            'ring-fill': 'ringFill 0.6s ease forwards',
+            'shimmer': 'shimmer 2s ease-in-out infinite',
+            'scale-in': 'scaleIn 0.2s ease forwards',
+          },
+          keyframes: {
+            fadeUp: { '0%': { opacity: '0', transform: 'translateY(12px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideIn: { '0%': { opacity: '0', transform: 'translateX(20px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
+            pulseDot: { '0%,100%': { opacity: '1', transform: 'scale(1)' }, '50%': { opacity: '0.4', transform: 'scale(0.85)' } },
+            ringFill: { '0%': { strokeDashoffset: '339.292' }, '100%': { strokeDashoffset: 'var(--ring-offset)' } },
+            shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+            scaleIn: { '0%': { opacity: '0', transform: 'scale(0.95)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+          },
+        },
+      },
+    };
+  </script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: #f0f0f0;
-      min-height: 100vh;
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2d3a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3a3d4a; }
+
+    /* Noise overlay */
+    .noise::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     }
 
-    header {
-      background: #161616;
-      border-bottom: 1px solid #2a2a2a;
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    /* Glass card */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
-    header .logo {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.5px;
+    .glass-strong {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    header .logo span { color: #6366f1; }
-    header .badge {
-      font-size: 11px;
-      background: #6366f1;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
+    /* Glow effects */
+    .glow-indigo { box-shadow: 0 0 60px -10px rgba(99, 102, 241, 0.15); }
+    .glow-green { box-shadow: 0 0 40px -10px rgba(34, 197, 94, 0.2); }
+    .glow-red { box-shadow: 0 0 40px -10px rgba(239, 68, 68, 0.2); }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
-
-    .search-card {
-      background: #161616;
-      border: 1px solid #2a2a2a;
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 32px;
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 28px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-
-    input {
-      background: #0f0f0f;
-      border: 1px solid #2a2a2a;
+    /* Toggle switch */
+    .toggle-track {
+      width: 36px; height: 20px;
+      background: #2a2d3a;
       border-radius: 10px;
-      color: #f0f0f0;
-      font-size: 15px;
-      padding: 12px 16px;
-      width: 100%;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus { border-color: #6366f1; }
-    input::placeholder { color: #555; }
-
-    .categories {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .cat-chip {
-      background: #1e1e1e;
-      border: 1px solid #2a2a2a;
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 13px;
+      position: relative;
       cursor: pointer;
-      user-select: none;
-      transition: all 0.15s;
-      color: #aaa;
-    }
-
-    .cat-chip.active {
-      background: #6366f1;
-      border-color: #6366f1;
-      color: white;
-    }
-
-    button#scanBtn {
-      background: #6366f1;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 13px 28px;
-      width: 100%;
       transition: background 0.2s;
     }
-
-    button#scanBtn:hover { background: #4f52d9; }
-    button#scanBtn:disabled { background: #333; cursor: not-allowed; color: #666; }
-
-    .progress-bar-wrap {
-      background: #1e1e1e;
-      border-radius: 999px;
-      height: 6px;
-      margin: 20px 0 8px;
-      overflow: hidden;
-      display: none;
-    }
-
-    .progress-bar {
-      background: #6366f1;
-      height: 100%;
-      border-radius: 999px;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .progress-label { font-size: 13px; color: #666; margin-bottom: 20px; display: none; }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-      display: none;
-    }
-
-    .summary-card {
-      background: #161616;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .summary-card .num {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .summary-card .label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-    .summary-card.listed .num { color: #22c55e; }
-    .summary-card.missing .num { color: #ef4444; }
-    .summary-card.error .num { color: #888; }
-
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      display: none;
-    }
-
-    .filter-tab {
-      background: #1e1e1e;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      color: #aaa;
-      transition: all 0.15s;
-    }
-
-    .filter-tab.active { background: #6366f1; border-color: #6366f1; color: white; }
-
-    .results-grid { display: none; gap: 10px; flex-direction: column; }
-
-    .result-item {
-      background: #161616;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    .status-dot {
-      width: 10px;
-      height: 10px;
+    .toggle-track.active { background: #6366f1; }
+    .toggle-track::after {
+      content: '';
+      width: 16px; height: 16px;
+      background: white;
       border-radius: 50%;
-      flex-shrink: 0;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: transform 0.2s;
+    }
+    .toggle-track.active::after { transform: translateX(16px); }
+
+    /* Gradient button */
+    .btn-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #7c3aed 100%);
+      background-size: 200% 200%;
+      transition: all 0.3s;
+    }
+    .btn-gradient:hover { background-position: 100% 100%; box-shadow: 0 8px 30px -8px rgba(99, 102, 241, 0.4); transform: translateY(-1px); }
+    .btn-gradient:active { transform: translateY(0); }
+    .btn-gradient:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Shimmer loading */
+    .shimmer-bg {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+      background-size: 200% 100%;
     }
 
-    .status-dot.listed { background: #22c55e; box-shadow: 0 0 8px #22c55e66; }
-    .status-dot.not_found { background: #ef4444; }
-    .status-dot.error { background: #555; }
-    .status-dot.checking { background: #6366f1; animation: pulse 1s infinite; }
+    /* Stagger children */
+    .stagger > * { opacity: 0; animation: fadeUp 0.4s ease forwards; }
+    .stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .stagger > *:nth-child(2) { animation-delay: 40ms; }
+    .stagger > *:nth-child(3) { animation-delay: 80ms; }
+    .stagger > *:nth-child(4) { animation-delay: 120ms; }
+    .stagger > *:nth-child(5) { animation-delay: 160ms; }
+    .stagger > *:nth-child(6) { animation-delay: 200ms; }
+    .stagger > *:nth-child(7) { animation-delay: 240ms; }
+    .stagger > *:nth-child(8) { animation-delay: 280ms; }
+    .stagger > *:nth-child(9) { animation-delay: 320ms; }
+    .stagger > *:nth-child(10) { animation-delay: 360ms; }
 
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* Drag active */
+    .drag-active { border-color: #6366f1 !important; background: rgba(99, 102, 241, 0.05) !important; }
 
-    .result-info { flex: 1; min-width: 0; }
-    .result-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
-    .result-cat { font-size: 12px; color: #666; }
-
-    .result-right { text-align: right; flex-shrink: 0; }
-    .result-status { font-size: 13px; font-weight: 600; }
-    .result-status.listed { color: #22c55e; }
-    .result-status.not_found { color: #ef4444; }
-    .result-status.error { color: #555; }
-
-    .result-link {
-      font-size: 11px;
-      color: #6366f1;
-      text-decoration: none;
-      display: block;
-      margin-top: 2px;
+    /* Tab underline */
+    .tab-active { color: #fff !important; }
+    .tab-active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #6366f1;
+      border-radius: 2px 2px 0 0;
     }
 
-    .result-link:hover { text-decoration: underline; }
-
-    .check-link {
-      font-size: 11px;
-      color: #555;
-      text-decoration: none;
+    /* SVG progress ring */
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.4s ease;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
     }
 
-    .check-link:hover { color: #888; }
+    /* Modal backdrop */
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Custom focus ring */
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
   </style>
 </head>
-<body>
-  <header>
-    <div class="logo">Opus <span>Scanner</span></div>
-    <div class="badge">Citation Checker</div>
+<body class="noise bg-surface-950 text-gray-200 min-h-screen font-body antialiased">
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="sticky top-0 z-50 glass-strong border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-14">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <span class="font-display font-bold text-lg tracking-tight text-white">Opus<span class="text-indigo-400">Scanner</span></span>
+          </div>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-indigo-400/70 bg-indigo-500/10 px-2 py-0.5 rounded-full hidden sm:inline">Citation Checker</span>
+        </div>
+
+        <!-- Nav Tabs -->
+        <nav class="flex items-center gap-1" id="navTabs">
+          <button onclick="switchTab('scan')" class="nav-tab tab-active relative px-3 py-4 text-sm font-medium text-gray-400 hover:text-white transition-colors" data-tab="scan">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span class="hidden sm:inline">Scan</span>
+            </span>
+          </button>
+          <button onclick="switchTab('clients')" class="nav-tab relative px-3 py-4 text-sm font-medium text-gray-400 hover:text-white transition-colors" data-tab="clients">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="hidden sm:inline">Clients</span>
+            </span>
+          </button>
+          <button onclick="switchTab('import')" class="nav-tab relative px-3 py-4 text-sm font-medium text-gray-400 hover:text-white transition-colors" data-tab="import">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+              <span class="hidden sm:inline">Import</span>
+            </span>
+          </button>
+          <button onclick="switchTab('directories')" class="nav-tab relative px-3 py-4 text-sm font-medium text-gray-400 hover:text-white transition-colors" data-tab="directories">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <span class="hidden sm:inline">Directories</span>
+            </span>
+          </button>
+        </nav>
+      </div>
+    </div>
   </header>
 
-  <div class="container">
-    <div class="search-card">
-      <h1>Directory Citation Scanner</h1>
-      <p class="subtitle">Check where your client is listed across the web — instantly.</p>
+  <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-      <div class="form-row">
-        <input id="businessName" type="text" placeholder="Business name (e.g. Moss Immigration Law)" />
-        <input id="location" type="text" placeholder="Location (e.g. Boise, ID)" />
+    <!-- ─── SCAN VIEW ─── -->
+    <div id="view-scan" class="view">
+      <!-- Hero Card -->
+      <div class="glass rounded-2xl p-6 sm:p-8 mb-8 glow-indigo relative overflow-hidden">
+        <!-- Background accent -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-violet-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative">
+          <h1 class="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight mb-1">Directory Citation Scanner</h1>
+          <p class="text-gray-400 text-sm mb-6">Check where your client is listed across <span id="dirCountLabel" class="text-indigo-400 font-semibold">100+</span> directories — instantly.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <input id="businessName" type="text" placeholder="Business name (e.g. Moss Immigration Law)"
+              class="w-full bg-surface-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" />
+            <input id="location" type="text" placeholder="Location (e.g. Boise, ID)"
+              class="w-full bg-surface-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" />
+          </div>
+
+          <!-- Category Chips -->
+          <div class="flex flex-wrap gap-2 mb-5" id="categoryChips"></div>
+
+          <button id="scanBtn" onclick="startScan()"
+            class="btn-gradient w-full rounded-xl px-6 py-3.5 text-sm font-semibold text-white flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Scan Directories
+          </button>
+        </div>
       </div>
 
-      <div class="categories" id="categories"></div>
-
-      <button id="scanBtn" onclick="startScan()">🔍 Scan Directories</button>
-
-      <div class="progress-bar-wrap" id="progressWrap">
-        <div class="progress-bar" id="progressBar"></div>
+      <!-- Progress Section (hidden by default) -->
+      <div id="scanProgress" class="hidden mb-8">
+        <div class="flex items-center justify-center gap-6 mb-6">
+          <!-- SVG Progress Ring -->
+          <div class="relative w-24 h-24">
+            <svg class="w-24 h-24" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
+              <circle id="progressRing" class="progress-ring-circle" cx="60" cy="60" r="54" fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.292" stroke-dashoffset="339.292"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span id="progressPct" class="font-display font-bold text-xl text-white">0%</span>
+            </div>
+          </div>
+          <div>
+            <div id="progressLabel" class="text-sm text-gray-400">Preparing scan...</div>
+            <div id="progressDetail" class="text-xs text-gray-500 mt-1"></div>
+          </div>
+        </div>
       </div>
-      <div class="progress-label" id="progressLabel"></div>
+
+      <!-- Summary Cards (hidden by default) -->
+      <div id="summaryGrid" class="hidden grid grid-cols-3 gap-3 sm:gap-4 mb-6 stagger">
+        <div class="glass rounded-xl p-4 sm:p-5 text-center glow-green">
+          <div id="countListed" class="font-display font-bold text-3xl sm:text-4xl text-emerald-400 mb-1">0</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wider">Listed</div>
+        </div>
+        <div class="glass rounded-xl p-4 sm:p-5 text-center glow-red">
+          <div id="countMissing" class="font-display font-bold text-3xl sm:text-4xl text-red-400 mb-1">0</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wider">Not Found</div>
+        </div>
+        <div class="glass rounded-xl p-4 sm:p-5 text-center">
+          <div id="countError" class="font-display font-bold text-3xl sm:text-4xl text-gray-500 mb-1">0</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wider">Errors</div>
+        </div>
+      </div>
+
+      <!-- Results Header + Filter -->
+      <div id="resultsHeader" class="hidden flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-2" id="filterTabs">
+          <button onclick="filterResults('all', this)" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all">All</button>
+          <button onclick="filterResults('listed', this)" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-800 text-gray-400 border border-white/5 hover:border-white/10 transition-all">Listed</button>
+          <button onclick="filterResults('not_found', this)" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-800 text-gray-400 border border-white/5 hover:border-white/10 transition-all">Missing</button>
+          <button onclick="filterResults('error', this)" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-800 text-gray-400 border border-white/5 hover:border-white/10 transition-all">Errors</button>
+        </div>
+        <button id="exportBtn" onclick="exportScanCsv()" class="hidden px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-800 text-gray-400 border border-white/5 hover:border-indigo-500/30 hover:text-indigo-300 transition-all flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Export CSV
+        </button>
+      </div>
+
+      <!-- Results Grid -->
+      <div id="resultsGrid" class="hidden flex flex-col gap-2"></div>
     </div>
 
-    <div class="summary-grid" id="summaryGrid">
-      <div class="summary-card listed">
-        <div class="num" id="countListed">0</div>
-        <div class="label">✅ Listed</div>
+    <!-- ─── CLIENTS VIEW ─── -->
+    <div id="view-clients" class="view hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-xl text-white">Client Profiles</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Save clients for quick one-click rescans</p>
+        </div>
+        <button onclick="openClientModal()" class="btn-gradient rounded-xl px-4 py-2.5 text-sm font-semibold text-white flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Add Client
+        </button>
       </div>
-      <div class="summary-card missing">
-        <div class="num" id="countMissing">0</div>
-        <div class="label">❌ Not Found</div>
+
+      <div id="clientsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
       </div>
-      <div class="summary-card error">
-        <div class="num" id="countError">0</div>
-        <div class="label">⚠️ Couldn't Check</div>
+      <div id="clientsEmpty" class="hidden text-center py-16">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-surface-800 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <p class="text-gray-500 text-sm">No clients saved yet</p>
+        <p class="text-gray-600 text-xs mt-1">Add a client to start tracking their citations</p>
+      </div>
+
+      <!-- Client Scan Results (inline) -->
+      <div id="clientScanResults" class="hidden mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display font-semibold text-lg text-white">Scan Results — <span id="clientScanName"></span></h3>
+          <button onclick="closeClientScan()" class="text-gray-500 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div id="clientScanProgress" class="mb-4"></div>
+        <div id="clientScanSummary" class="grid grid-cols-3 gap-3 mb-4 hidden"></div>
+        <div id="clientScanGrid" class="flex flex-col gap-2"></div>
+      </div>
+
+      <!-- Client History -->
+      <div id="clientHistory" class="hidden mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display font-semibold text-lg text-white">Scan History — <span id="clientHistoryName"></span></h3>
+          <button onclick="closeClientHistory()" class="text-gray-500 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div id="clientHistoryList" class="flex flex-col gap-3"></div>
       </div>
     </div>
 
-    <div class="filter-tabs" id="filterTabs">
-      <div class="filter-tab active" onclick="filterResults('all')">All</div>
-      <div class="filter-tab" onclick="filterResults('listed')">✅ Listed</div>
-      <div class="filter-tab" onclick="filterResults('not_found')">❌ Missing</div>
+    <!-- ─── IMPORT VIEW ─── -->
+    <div id="view-import" class="view hidden">
+      <div class="mb-6">
+        <h2 class="font-display font-bold text-xl text-white">CSV Import</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Upload a ClickUp CSV export to detect and scan clients</p>
+      </div>
+
+      <!-- Drop Zone -->
+      <div id="dropZone" class="glass rounded-2xl border-2 border-dashed border-white/10 p-12 text-center cursor-pointer hover:border-indigo-500/40 transition-all duration-300 mb-6"
+        onclick="document.getElementById('csvFileInput').click()">
+        <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvUpload(this.files[0])" />
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
+          <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+        </div>
+        <p class="text-white font-medium mb-1">Drop your CSV file here</p>
+        <p class="text-gray-500 text-sm">or click to browse</p>
+      </div>
+
+      <!-- Import Results -->
+      <div id="importResults" class="hidden">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-display font-semibold text-lg text-white">Detected Clients</h3>
+            <p class="text-xs text-gray-500 mt-0.5" id="importStats"></p>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/5">
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Domain</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Type</th>
+                <th class="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="importTableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div class="results-grid" id="resultsGrid"></div>
+    <!-- ─── DIRECTORIES VIEW ─── -->
+    <div id="view-directories" class="view hidden">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="font-display font-bold text-xl text-white">Directory Manager</h2>
+          <p class="text-sm text-gray-500 mt-0.5"><span id="dirTotalCount">0</span> directories across <span id="dirCategoryCount">0</span> categories</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <svg class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="dirSearch" type="text" placeholder="Search directories..."
+              oninput="filterDirectories()"
+              class="w-48 sm:w-64 bg-surface-900 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500" />
+          </div>
+          <button onclick="openAddDirModal()" class="btn-gradient rounded-xl px-4 py-2.5 text-sm font-semibold text-white flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span class="hidden sm:inline">Add</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Category filter chips for directories -->
+      <div class="flex flex-wrap gap-2 mb-5" id="dirCategoryChips"></div>
+
+      <!-- Directory List -->
+      <div id="directoriesList" class="flex flex-col gap-2"></div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════ CLIENT MODAL ═══════════════════ -->
+  <div id="clientModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+    <div class="glass-strong rounded-2xl p-6 w-full max-w-md mx-4 animate-scale-in">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display font-semibold text-lg text-white">Add Client</h3>
+        <button onclick="closeClientModal()" class="text-gray-500 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-3">
+        <input id="clientName" type="text" placeholder="Business name *" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="clientLocation" type="text" placeholder="Location (e.g. Phoenix, AZ)" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="clientWebsite" type="text" placeholder="Website URL" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="clientPhone" type="text" placeholder="Phone" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="clientAddress" type="text" placeholder="Address" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+      </div>
+      <div class="flex gap-3 mt-5">
+        <button onclick="closeClientModal()" class="flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-400 bg-surface-800 border border-white/5 hover:border-white/10 transition-all">Cancel</button>
+        <button onclick="saveClient()" class="flex-1 btn-gradient rounded-xl px-4 py-2.5 text-sm font-semibold text-white">Save Client</button>
+      </div>
+    </div>
   </div>
 
+  <!-- ═══════════════════ ADD DIRECTORY MODAL ═══════════════════ -->
+  <div id="addDirModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+    <div class="glass-strong rounded-2xl p-6 w-full max-w-md mx-4 animate-scale-in">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display font-semibold text-lg text-white">Add Directory</h3>
+        <button onclick="closeAddDirModal()" class="text-gray-500 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-3">
+        <input id="dirName" type="text" placeholder="Directory name *" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="dirUrl" type="text" placeholder="Directory URL (e.g. https://yelp.com) *" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <input id="dirSearchTemplate" type="text" placeholder="Search URL template (use {{business}} and {{location}}) *" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500" />
+        <select id="dirCategory" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
+          <option value="General">General</option>
+          <option value="Legal">Legal</option>
+          <option value="Medical">Medical</option>
+          <option value="Wedding/Venue">Wedding/Venue</option>
+          <option value="Chamber">Chamber</option>
+          <option value="Regional">Regional</option>
+          <option value="Other">Other</option>
+        </select>
+        <select id="dirCheckMethod" class="w-full bg-surface-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
+          <option value="hybrid">Hybrid (Axios + Playwright fallback)</option>
+          <option value="axios">Axios only</option>
+          <option value="playwright">Playwright only</option>
+        </select>
+      </div>
+      <div class="flex gap-3 mt-5">
+        <button onclick="closeAddDirModal()" class="flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-400 bg-surface-800 border border-white/5 hover:border-white/10 transition-all">Cancel</button>
+        <button onclick="saveDirectory()" class="flex-1 btn-gradient rounded-xl px-4 py-2.5 text-sm font-semibold text-white">Add Directory</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
   <script>
-    const CATEGORIES = ['General', 'Legal', 'Medical', 'Wedding/Venue'];
+    // ─── State ───
     let activeCategories = [];
     let allResults = [];
     let currentFilter = 'all';
+    let allDirectories = [];
+    let allCategories = [];
+    let allClients = [];
+    let currentTab = 'scan';
+    let activeDirCategoryFilter = null;
+    let lastScanResults = null;
 
-    // Render category chips
-    const catContainer = document.getElementById('categories');
-    CATEGORIES.forEach(cat => {
-      const chip = document.createElement('div');
-      chip.className = 'cat-chip';
-      chip.textContent = cat;
-      chip.onclick = () => {
-        chip.classList.toggle('active');
-        if (activeCategories.includes(cat)) {
-          activeCategories = activeCategories.filter(c => c !== cat);
-        } else {
-          activeCategories.push(cat);
-        }
-      };
-      catContainer.appendChild(chip);
+    // ─── Init ───
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDirectories();
+      loadClients();
+      setupDragDrop();
     });
 
-    function filterResults(type) {
-      currentFilter = type;
-      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
-      renderResults();
+    // ─── Tab Navigation ───
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      document.querySelectorAll('.nav-tab').forEach(t => { t.classList.remove('tab-active'); });
+      document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('tab-active');
+
+      if (tab === 'clients') loadClients();
+      if (tab === 'directories') renderDirectories();
     }
 
-    function renderResults() {
-      const grid = document.getElementById('resultsGrid');
-      const filtered = currentFilter === 'all' ? allResults : allResults.filter(r => r.status === currentFilter);
-      grid.innerHTML = '';
-      filtered.forEach(r => grid.appendChild(createResultEl(r)));
-    }
-
-    function createResultEl(result) {
-      const el = document.createElement('div');
-      el.className = 'result-item';
-      el.dataset.status = result.status;
-
-      const statusLabel = result.status === 'listed' ? '✅ Listed' : result.status === 'not_found' ? '❌ Not Found' : '⚠️ Error';
-
-      el.innerHTML = `
-        <div class="status-dot ${result.status}"></div>
-        <div class="result-info">
-          <div class="result-name">${result.name}</div>
-          <div class="result-cat">${result.category}</div>
-        </div>
-        <div class="result-right">
-          <div class="result-status ${result.status}">${statusLabel}</div>
-          ${result.liveUrl ? `<a class="result-link" href="${result.liveUrl}" target="_blank">View listing ↗</a>` : `<a class="check-link" href="${result.searchUrl}" target="_blank">Search manually ↗</a>`}
-        </div>
-      `;
-      return el;
-    }
-
-    async function startScan() {
-      const businessName = document.getElementById('businessName').value.trim();
-      const location = document.getElementById('location').value.trim();
-
-      if (!businessName || !location) {
-        alert('Please enter both a business name and location.');
-        return;
+    // ─── Load directories from API ───
+    async function loadDirectories() {
+      try {
+        const res = await fetch('/api/directories?all=true');
+        const data = await res.json();
+        allDirectories = data.directories || [];
+        allCategories = data.categories || [];
+        renderCategoryChips();
+        renderDirCategoryChips();
+        document.getElementById('dirCountLabel').textContent = allDirectories.filter(d => d.active).length;
+        document.getElementById('dirTotalCount').textContent = allDirectories.length;
+        document.getElementById('dirCategoryCount').textContent = allCategories.length;
+      } catch (e) {
+        console.error('Failed to load directories:', e);
       }
+    }
 
-      // Reset
-      allResults = [];
-      document.getElementById('resultsGrid').innerHTML = '';
-      document.getElementById('resultsGrid').style.display = 'flex';
-      document.getElementById('summaryGrid').style.display = 'grid';
-      document.getElementById('filterTabs').style.display = 'flex';
-      document.getElementById('progressWrap').style.display = 'block';
-      document.getElementById('progressLabel').style.display = 'block';
-      document.getElementById('countListed').textContent = '0';
-      document.getElementById('countMissing').textContent = '0';
-      document.getElementById('countError').textContent = '0';
-
-      const btn = document.getElementById('scanBtn');
-      btn.disabled = true;
-      btn.textContent = '⏳ Scanning...';
-
-      let total = 0, done = 0;
-
-      const resp = await fetch('/api/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ businessName, location, categories: activeCategories }),
+    // ─── Category Chips (Scan View) ───
+    function renderCategoryChips() {
+      const container = document.getElementById('categoryChips');
+      container.innerHTML = '';
+      allCategories.forEach(cat => {
+        const chip = document.createElement('button');
+        chip.className = 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ' +
+          'bg-surface-800 text-gray-400 border-white/5 hover:border-white/10';
+        chip.textContent = cat;
+        chip.onclick = () => {
+          if (activeCategories.includes(cat)) {
+            activeCategories = activeCategories.filter(c => c !== cat);
+            chip.className = 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 bg-surface-800 text-gray-400 border-white/5 hover:border-white/10';
+          } else {
+            activeCategories.push(cat);
+            chip.className = 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 bg-indigo-500/20 text-indigo-300 border-indigo-500/30';
+          }
+        };
+        container.appendChild(chip);
       });
+    }
 
-      const reader = resp.body.getReader();
+    // ─── SSE Stream Reader ───
+    async function readSSEStream(response, onStart, onResult, onDone) {
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let buffer = '';
 
       while (true) {
-        const { done: streamDone, value } = await reader.read();
-        if (streamDone) break;
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        const text = decoder.decode(value);
-        const lines = text.split('\n').filter(l => l.startsWith('data: '));
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
-          const data = JSON.parse(line.slice(6));
-
-          if (data.type === 'start') {
-            total = data.total;
-          } else if (data.type === 'result') {
-            done++;
-            const r = data.result;
-            allResults.push(r);
-
-            // Update counts
-            const listed = allResults.filter(x => x.status === 'listed').length;
-            const missing = allResults.filter(x => x.status === 'not_found').length;
-            const errors = allResults.filter(x => x.status === 'error').length;
-            document.getElementById('countListed').textContent = listed;
-            document.getElementById('countMissing').textContent = missing;
-            document.getElementById('countError').textContent = errors;
-
-            // Progress
-            const pct = Math.round((done / total) * 100);
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('progressLabel').textContent = `Checking ${done} of ${total} directories...`;
-
-            // Add to grid
-            const el = createResultEl(r);
-            if (currentFilter === 'all' || r.status === currentFilter) {
-              document.getElementById('resultsGrid').appendChild(el);
-            }
-          } else if (data.type === 'done') {
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('progressLabel').textContent = `Scan complete — ${data.summary.listed} listed, ${data.summary.not_found} not found`;
-            btn.disabled = false;
-            btn.textContent = '🔍 Scan Again';
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.type === 'start') onStart(data);
+            else if (data.type === 'result') onResult(data);
+            else if (data.type === 'done') onDone(data);
+          } catch (e) {
+            // Skip malformed JSON chunks
           }
         }
       }
     }
 
-    // Enter key support
+    // ═══════════════════ SCAN ═══════════════════
+
+    async function startScan() {
+      const businessName = document.getElementById('businessName').value.trim();
+      const location = document.getElementById('location').value.trim();
+      if (!businessName || !location) {
+        shakeElement(document.getElementById('scanBtn'));
+        return;
+      }
+
+      // Reset
+      allResults = [];
+      lastScanResults = null;
+      currentFilter = 'all';
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Scanning...';
+
+      document.getElementById('scanProgress').classList.remove('hidden');
+      document.getElementById('summaryGrid').classList.add('hidden');
+      document.getElementById('resultsHeader').classList.add('hidden');
+      document.getElementById('resultsGrid').classList.add('hidden');
+      document.getElementById('resultsGrid').innerHTML = '';
+      document.getElementById('exportBtn').classList.add('hidden');
+
+      // Reset progress ring
+      const ring = document.getElementById('progressRing');
+      ring.style.strokeDashoffset = '339.292';
+      document.getElementById('progressPct').textContent = '0%';
+
+      let total = 0;
+      let done = 0;
+
+      try {
+        const resp = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ businessName, location, categories: activeCategories.length > 0 ? activeCategories : undefined }),
+        });
+
+        await readSSEStream(resp,
+          (data) => { // onStart
+            total = data.total;
+            document.getElementById('progressLabel').textContent = `Scanning ${total} directories...`;
+          },
+          (data) => { // onResult
+            done++;
+            const r = data.result;
+            allResults.push(r);
+            updateScanUI(done, total);
+            appendResultCard(r, 'resultsGrid');
+          },
+          (data) => { // onDone
+            lastScanResults = data;
+            finishScan(data.summary);
+          }
+        );
+      } catch (e) {
+        console.error('Scan error:', e);
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Retry Scan';
+      }
+    }
+
+    function updateScanUI(done, total) {
+      const pct = Math.round((done / total) * 100);
+      const ring = document.getElementById('progressRing');
+      const circumference = 339.292;
+      ring.style.strokeDashoffset = circumference - (circumference * pct / 100);
+      document.getElementById('progressPct').textContent = pct + '%';
+      document.getElementById('progressLabel').textContent = `Checking directory ${done} of ${total}`;
+
+      const lastResult = allResults[allResults.length - 1];
+      document.getElementById('progressDetail').textContent = lastResult ? lastResult.name : '';
+
+      // Show results grid as results come in
+      document.getElementById('resultsGrid').classList.remove('hidden');
+      document.getElementById('resultsGrid').style.display = 'flex';
+      document.getElementById('resultsHeader').classList.remove('hidden');
+
+      // Update live counts
+      const listed = allResults.filter(x => x.status === 'listed').length;
+      const missing = allResults.filter(x => x.status === 'not_found').length;
+      const errors = allResults.filter(x => x.status === 'error').length;
+
+      // Show summary during scan too
+      document.getElementById('summaryGrid').classList.remove('hidden');
+      document.getElementById('summaryGrid').style.display = 'grid';
+      document.getElementById('countListed').textContent = listed;
+      document.getElementById('countMissing').textContent = missing;
+      document.getElementById('countError').textContent = errors;
+    }
+
+    function finishScan(summary) {
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = false;
+      btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Scan Again';
+
+      document.getElementById('scanProgress').classList.add('hidden');
+      document.getElementById('progressLabel').textContent = `Complete — ${summary.listed} listed, ${summary.not_found} missing`;
+      document.getElementById('exportBtn').classList.remove('hidden');
+      document.getElementById('exportBtn').style.display = 'flex';
+    }
+
+    function appendResultCard(result, containerId) {
+      const grid = document.getElementById(containerId);
+      if (currentFilter !== 'all' && result.status !== currentFilter) return;
+
+      const el = document.createElement('div');
+      el.className = 'glass rounded-xl px-4 py-3 flex items-center gap-3 animate-fade-up';
+      el.dataset.status = result.status;
+
+      const statusColors = { listed: 'bg-emerald-400 shadow-emerald-400/30 shadow-sm', not_found: 'bg-red-400', error: 'bg-gray-600' };
+      const statusLabels = { listed: 'Listed', not_found: 'Not Found', error: 'Error' };
+      const statusTextColors = { listed: 'text-emerald-400', not_found: 'text-red-400', error: 'text-gray-500' };
+
+      const catColor = getCategoryColor(result.category);
+
+      el.innerHTML = `
+        <div class="w-2.5 h-2.5 rounded-full flex-shrink-0 ${statusColors[result.status] || 'bg-gray-600'}"></div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium text-white truncate">${escHtml(result.name)}</div>
+          <div class="flex items-center gap-2 mt-0.5">
+            <span class="text-[10px] font-medium px-1.5 py-0.5 rounded ${catColor}">${escHtml(result.category)}</span>
+            <span class="text-[10px] text-gray-600">${result.method || ''}</span>
+          </div>
+        </div>
+        <div class="flex-shrink-0 text-right">
+          <div class="text-xs font-semibold ${statusTextColors[result.status]}">${statusLabels[result.status]}</div>
+          ${result.liveUrl
+            ? `<a href="${escHtml(result.liveUrl)}" target="_blank" class="text-[10px] text-indigo-400 hover:underline mt-0.5 block">View listing &nearr;</a>`
+            : `<a href="${escHtml(result.searchUrl)}" target="_blank" class="text-[10px] text-gray-600 hover:text-gray-400 mt-0.5 block">Check manually &nearr;</a>`}
+        </div>
+      `;
+      grid.appendChild(el);
+    }
+
+    function filterResults(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-800 text-gray-400 border border-white/5 hover:border-white/10 transition-all';
+      });
+      if (btn) btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all';
+
+      const grid = document.getElementById('resultsGrid');
+      grid.innerHTML = '';
+      const filtered = type === 'all' ? allResults : allResults.filter(r => r.status === type);
+      filtered.forEach(r => appendResultCard(r, 'resultsGrid'));
+    }
+
+    function exportScanCsv() {
+      if (!allResults.length) return;
+      const header = 'Directory,URL,Category,Status,Method,Live URL,Search URL';
+      const rows = allResults.map(r => [
+        csvEsc(r.name), csvEsc(r.url), csvEsc(r.category), csvEsc(r.status), csvEsc(r.method || ''),
+        csvEsc(r.liveUrl || ''), csvEsc(r.searchUrl || '')
+      ].join(','));
+      const csv = [header, ...rows].join('\n');
+      downloadFile(csv, `citation-scan-${Date.now()}.csv`, 'text/csv');
+    }
+
+    // ═══════════════════ CLIENTS ═══════════════════
+
+    async function loadClients() {
+      try {
+        const res = await fetch('/api/clients');
+        allClients = await res.json();
+        renderClients();
+      } catch (e) {
+        console.error('Failed to load clients:', e);
+      }
+    }
+
+    function renderClients() {
+      const grid = document.getElementById('clientsGrid');
+      const empty = document.getElementById('clientsEmpty');
+      grid.innerHTML = '';
+
+      if (allClients.length === 0) {
+        empty.classList.remove('hidden');
+        grid.classList.add('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      grid.classList.remove('hidden');
+
+      allClients.forEach(client => {
+        const card = document.createElement('div');
+        card.className = 'glass rounded-xl p-5 flex flex-col animate-fade-up';
+        card.innerHTML = `
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h4 class="font-display font-semibold text-white text-sm">${escHtml(client.name)}</h4>
+              <p class="text-xs text-gray-500 mt-0.5">${escHtml(client.location || 'No location')}</p>
+            </div>
+            <button onclick="deleteClient('${client.id}')" class="text-gray-600 hover:text-red-400 transition-colors p-1" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+          ${client.website ? `<p class="text-xs text-indigo-400 truncate mb-3">${escHtml(client.website)}</p>` : '<div class="mb-3"></div>'}
+          <div class="flex gap-2 mt-auto">
+            <button onclick="scanClient('${client.id}')" class="flex-1 rounded-lg px-3 py-2 text-xs font-semibold text-white bg-indigo-500/20 border border-indigo-500/30 hover:bg-indigo-500/30 transition-all flex items-center justify-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              Scan
+            </button>
+            <button onclick="showHistory('${client.id}')" class="rounded-lg px-3 py-2 text-xs font-medium text-gray-400 bg-surface-800 border border-white/5 hover:border-white/10 transition-all">
+              History
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openClientModal() { document.getElementById('clientModal').classList.remove('hidden'); document.getElementById('clientModal').style.display = 'flex'; }
+    function closeClientModal() { document.getElementById('clientModal').classList.add('hidden'); document.getElementById('clientModal').style.display = ''; clearClientForm(); }
+    function clearClientForm() { ['clientName','clientLocation','clientWebsite','clientPhone','clientAddress'].forEach(id => document.getElementById(id).value = ''); }
+
+    async function saveClient() {
+      const name = document.getElementById('clientName').value.trim();
+      if (!name) { shakeElement(document.getElementById('clientName')); return; }
+
+      try {
+        const res = await fetch('/api/clients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            location: document.getElementById('clientLocation').value.trim(),
+            website: document.getElementById('clientWebsite').value.trim(),
+            phone: document.getElementById('clientPhone').value.trim(),
+            address: document.getElementById('clientAddress').value.trim(),
+          }),
+        });
+        if (res.ok) {
+          closeClientModal();
+          loadClients();
+        }
+      } catch (e) { console.error('Save client error:', e); }
+    }
+
+    async function deleteClient(id) {
+      if (!confirm('Delete this client?')) return;
+      try {
+        await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+        loadClients();
+      } catch (e) { console.error('Delete client error:', e); }
+    }
+
+    async function scanClient(clientId) {
+      const client = allClients.find(c => c.id === clientId);
+      if (!client) return;
+      if (!client.location) { alert('Client needs a location to scan. Edit the client first.'); return; }
+
+      document.getElementById('clientScanResults').classList.remove('hidden');
+      document.getElementById('clientScanName').textContent = client.name;
+      document.getElementById('clientScanGrid').innerHTML = '';
+      document.getElementById('clientScanSummary').classList.add('hidden');
+      document.getElementById('clientScanProgress').innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg><span class="text-sm text-gray-400">Starting scan...</span></div>';
+
+      let results = [];
+      let total = 0, done = 0;
+
+      try {
+        const resp = await fetch(`/api/clients/${clientId}/scan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+
+        await readSSEStream(resp,
+          (data) => { total = data.total; },
+          (data) => {
+            done++;
+            results.push(data.result);
+            document.getElementById('clientScanProgress').innerHTML = `<div class="text-sm text-gray-400">Checking ${done} of ${total}...</div>`;
+            const el = document.createElement('div');
+            el.className = 'glass rounded-xl px-4 py-3 flex items-center gap-3 animate-fade-up';
+            const sc = { listed: 'bg-emerald-400 shadow-emerald-400/30 shadow-sm', not_found: 'bg-red-400', error: 'bg-gray-600' };
+            const sl = { listed: 'Listed', not_found: 'Not Found', error: 'Error' };
+            const st = { listed: 'text-emerald-400', not_found: 'text-red-400', error: 'text-gray-500' };
+            el.innerHTML = `<div class="w-2.5 h-2.5 rounded-full flex-shrink-0 ${sc[data.result.status]}"></div><div class="flex-1 min-w-0"><div class="text-sm font-medium text-white truncate">${escHtml(data.result.name)}</div></div><div class="text-xs font-semibold ${st[data.result.status]}">${sl[data.result.status]}</div>`;
+            document.getElementById('clientScanGrid').appendChild(el);
+          },
+          (data) => {
+            const s = data.summary;
+            document.getElementById('clientScanProgress').innerHTML = `<div class="text-sm text-emerald-400 font-medium">Scan complete</div>`;
+            document.getElementById('clientScanSummary').classList.remove('hidden');
+            document.getElementById('clientScanSummary').style.display = 'grid';
+            document.getElementById('clientScanSummary').innerHTML = `
+              <div class="glass rounded-xl p-3 text-center"><div class="font-display font-bold text-2xl text-emerald-400">${s.listed}</div><div class="text-[10px] text-gray-500 uppercase">Listed</div></div>
+              <div class="glass rounded-xl p-3 text-center"><div class="font-display font-bold text-2xl text-red-400">${s.not_found}</div><div class="text-[10px] text-gray-500 uppercase">Missing</div></div>
+              <div class="glass rounded-xl p-3 text-center"><div class="font-display font-bold text-2xl text-gray-500">${s.error}</div><div class="text-[10px] text-gray-500 uppercase">Errors</div></div>
+            `;
+          }
+        );
+      } catch (e) {
+        document.getElementById('clientScanProgress').innerHTML = `<div class="text-sm text-red-400">Scan failed: ${e.message}</div>`;
+      }
+    }
+
+    function closeClientScan() { document.getElementById('clientScanResults').classList.add('hidden'); }
+
+    async function showHistory(clientId) {
+      const client = allClients.find(c => c.id === clientId);
+      if (!client) return;
+
+      document.getElementById('clientHistory').classList.remove('hidden');
+      document.getElementById('clientHistoryName').textContent = client.name;
+      document.getElementById('clientHistoryList').innerHTML = '<div class="text-sm text-gray-500">Loading history...</div>';
+
+      try {
+        const res = await fetch(`/api/clients/${clientId}/history`);
+        const scans = await res.json();
+        const list = document.getElementById('clientHistoryList');
+        list.innerHTML = '';
+
+        if (scans.length === 0) {
+          list.innerHTML = '<div class="text-sm text-gray-500 py-4 text-center">No scan history yet</div>';
+          return;
+        }
+
+        scans.forEach(scan => {
+          const el = document.createElement('div');
+          el.className = 'glass rounded-xl p-4 animate-fade-up';
+          const date = new Date(scan.scannedAt).toLocaleString();
+          el.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs text-gray-500">${date}</span>
+            </div>
+            <div class="flex gap-4 text-sm">
+              <span class="text-emerald-400 font-semibold">${scan.summary?.listed || 0} listed</span>
+              <span class="text-red-400 font-semibold">${scan.summary?.not_found || 0} missing</span>
+              <span class="text-gray-500">${scan.summary?.error || 0} errors</span>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        document.getElementById('clientHistoryList').innerHTML = '<div class="text-sm text-red-400">Failed to load history</div>';
+      }
+    }
+
+    function closeClientHistory() { document.getElementById('clientHistory').classList.add('hidden'); }
+
+    // ═══════════════════ CSV IMPORT ═══════════════════
+
+    function setupDragDrop() {
+      const zone = document.getElementById('dropZone');
+      ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.add('drag-active'); }));
+      ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove('drag-active'); }));
+      zone.addEventListener('drop', (e) => {
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith('.csv')) handleCsvUpload(file);
+      });
+    }
+
+    async function handleCsvUpload(file) {
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('file', file);
+
+      document.getElementById('dropZone').innerHTML = `
+        <div class="flex items-center justify-center gap-2">
+          <svg class="w-5 h-5 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+          <span class="text-sm text-gray-400">Processing ${escHtml(file.name)}...</span>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/api/import-csv', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        // Reset drop zone
+        document.getElementById('dropZone').innerHTML = `
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <p class="text-white font-medium mb-1">Upload complete</p>
+          <p class="text-gray-500 text-sm">Drop another CSV to re-import</p>
+        `;
+
+        document.getElementById('importResults').classList.remove('hidden');
+        document.getElementById('importStats').textContent = `${data.clients.length} clients detected from ${data.totalParentRows} parent rows`;
+
+        const tbody = document.getElementById('importTableBody');
+        tbody.innerHTML = '';
+
+        data.clients.forEach((client, i) => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-white/5 hover:bg-white/[0.02] transition-colors animate-fade-up';
+          tr.style.animationDelay = `${i * 30}ms`;
+          tr.innerHTML = `
+            <td class="py-3 px-4 text-sm text-white font-medium">${escHtml(client.name)}</td>
+            <td class="py-3 px-4 text-sm text-gray-400 hidden sm:table-cell">${escHtml(client.domainUrl || '—')}</td>
+            <td class="py-3 px-4 hidden md:table-cell">
+              ${client.siteType ? `<span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">${escHtml(client.siteType)}</span>` : '<span class="text-xs text-gray-600">—</span>'}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button onclick="saveImportedClient('${escHtml(client.name)}', '${escHtml(client.domainUrl || '')}', this)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/30 transition-all">
+                Save Client
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        document.getElementById('dropZone').innerHTML = `
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-500/10 flex items-center justify-center">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <p class="text-white font-medium mb-1">Upload failed</p>
+          <p class="text-red-400 text-sm">${e.message}</p>
+        `;
+      }
+    }
+
+    async function saveImportedClient(name, website, btn) {
+      try {
+        const res = await fetch('/api/clients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, website, location: '' }),
+        });
+        if (res.ok) {
+          btn.textContent = 'Saved';
+          btn.disabled = true;
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+          loadClients();
+        }
+      } catch (e) { console.error('Save imported client error:', e); }
+    }
+
+    // ═══════════════════ DIRECTORIES ═══════════════════
+
+    function renderDirCategoryChips() {
+      const container = document.getElementById('dirCategoryChips');
+      container.innerHTML = '';
+
+      const allChip = document.createElement('button');
+      allChip.className = 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ' +
+        (activeDirCategoryFilter === null ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-surface-800 text-gray-400 border-white/5 hover:border-white/10');
+      allChip.textContent = 'All';
+      allChip.onclick = () => { activeDirCategoryFilter = null; renderDirCategoryChips(); renderDirectories(); };
+      container.appendChild(allChip);
+
+      allCategories.forEach(cat => {
+        const chip = document.createElement('button');
+        chip.className = 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ' +
+          (activeDirCategoryFilter === cat ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-surface-800 text-gray-400 border-white/5 hover:border-white/10');
+        chip.textContent = cat;
+        chip.onclick = () => { activeDirCategoryFilter = cat; renderDirCategoryChips(); renderDirectories(); };
+        container.appendChild(chip);
+      });
+    }
+
+    function filterDirectories() { renderDirectories(); }
+
+    function renderDirectories() {
+      const list = document.getElementById('directoriesList');
+      list.innerHTML = '';
+      const search = (document.getElementById('dirSearch')?.value || '').toLowerCase();
+
+      let filtered = allDirectories;
+      if (activeDirCategoryFilter) filtered = filtered.filter(d => d.category === activeDirCategoryFilter);
+      if (search) filtered = filtered.filter(d => d.name.toLowerCase().includes(search) || d.url.toLowerCase().includes(search) || d.category.toLowerCase().includes(search));
+
+      filtered.forEach((dir, i) => {
+        const el = document.createElement('div');
+        el.className = 'glass rounded-xl px-4 py-3 flex items-center gap-3 animate-fade-up';
+        el.style.animationDelay = `${Math.min(i * 20, 300)}ms`;
+
+        const catColor = getCategoryColor(dir.category);
+
+        el.innerHTML = `
+          <div class="toggle-track ${dir.active ? 'active' : ''}" onclick="toggleDirectory('${dir.id}', this)" title="${dir.active ? 'Disable' : 'Enable'}"></div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium ${dir.active ? 'text-white' : 'text-gray-500'} truncate">${escHtml(dir.name)}</div>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="text-[10px] font-medium px-1.5 py-0.5 rounded ${catColor}">${escHtml(dir.category)}</span>
+              <span class="text-[10px] text-gray-600 truncate">${escHtml(dir.url)}</span>
+            </div>
+          </div>
+          <span class="text-[10px] text-gray-600 flex-shrink-0">${dir.checkMethod || 'hybrid'}</span>
+        `;
+        list.appendChild(el);
+      });
+
+      // Update counts
+      document.getElementById('dirTotalCount').textContent = allDirectories.length;
+    }
+
+    async function toggleDirectory(id, toggleEl) {
+      const dir = allDirectories.find(d => d.id === id);
+      if (!dir) return;
+      const newActive = !dir.active;
+
+      try {
+        const res = await fetch(`/api/directories/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active: newActive }),
+        });
+        if (res.ok) {
+          dir.active = newActive;
+          if (newActive) toggleEl.classList.add('active');
+          else toggleEl.classList.remove('active');
+          // Update label opacity
+          const label = toggleEl.nextElementSibling?.querySelector('.text-sm');
+          if (label) {
+            label.classList.toggle('text-white', newActive);
+            label.classList.toggle('text-gray-500', !newActive);
+          }
+          document.getElementById('dirCountLabel').textContent = allDirectories.filter(d => d.active).length;
+        }
+      } catch (e) { console.error('Toggle directory error:', e); }
+    }
+
+    function openAddDirModal() { document.getElementById('addDirModal').classList.remove('hidden'); document.getElementById('addDirModal').style.display = 'flex'; }
+    function closeAddDirModal() { document.getElementById('addDirModal').classList.add('hidden'); document.getElementById('addDirModal').style.display = ''; }
+
+    async function saveDirectory() {
+      const name = document.getElementById('dirName').value.trim();
+      const url = document.getElementById('dirUrl').value.trim();
+      const searchUrlTemplate = document.getElementById('dirSearchTemplate').value.trim();
+      const category = document.getElementById('dirCategory').value;
+      const checkMethod = document.getElementById('dirCheckMethod').value;
+
+      if (!name || !url || !searchUrlTemplate) { shakeElement(document.getElementById('dirName')); return; }
+
+      try {
+        const res = await fetch('/api/directories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, url, searchUrlTemplate, category, checkMethod }),
+        });
+        if (res.ok) {
+          closeAddDirModal();
+          loadDirectories().then(() => renderDirectories());
+          ['dirName','dirUrl','dirSearchTemplate'].forEach(id => document.getElementById(id).value = '');
+        } else {
+          const err = await res.json();
+          alert(err.error || 'Failed to add directory');
+        }
+      } catch (e) { console.error('Save directory error:', e); }
+    }
+
+    // ═══════════════════ UTILITIES ═══════════════════
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g, '&#39;');
+    }
+
+    function csvEsc(val) {
+      const str = String(val || '');
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) return `"${str.replace(/"/g, '""')}"`;
+      return str;
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function getCategoryColor(cat) {
+      const colors = {
+        'General': 'bg-blue-500/10 text-blue-400',
+        'Legal': 'bg-amber-500/10 text-amber-400',
+        'Medical': 'bg-emerald-500/10 text-emerald-400',
+        'Wedding/Venue': 'bg-pink-500/10 text-pink-400',
+        'Chamber': 'bg-violet-500/10 text-violet-400',
+        'Regional': 'bg-cyan-500/10 text-cyan-400',
+        'Other': 'bg-gray-500/10 text-gray-400',
+      };
+      return colors[cat] || colors['Other'];
+    }
+
+    function shakeElement(el) {
+      el.style.animation = 'none';
+      el.offsetHeight; // trigger reflow
+      el.style.animation = 'shake 0.4s ease';
+      setTimeout(() => el.style.animation = '', 400);
+    }
+
+    // Enter key on scan view
     document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') startScan();
+      if (e.key === 'Enter' && currentTab === 'scan') {
+        const active = document.activeElement;
+        if (active && (active.id === 'businessName' || active.id === 'location')) {
+          startScan();
+        }
+      }
     });
   </script>
+
+  <style>
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+  </style>
 </body>
 </html>
