@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Citation Scanner — Opus Automations</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #161616;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    header .logo span { color: #6366f1; }
+    header .badge {
+      font-size: 11px;
+      background: #6366f1;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+
+    .search-card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+    input {
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      color: #f0f0f0;
+      font-size: 15px;
+      padding: 12px 16px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus { border-color: #6366f1; }
+    input::placeholder { color: #555; }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .cat-chip {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+      color: #aaa;
+    }
+
+    .cat-chip.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: white;
+    }
+
+    button#scanBtn {
+      background: #6366f1;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px 28px;
+      width: 100%;
+      transition: background 0.2s;
+    }
+
+    button#scanBtn:hover { background: #4f52d9; }
+    button#scanBtn:disabled { background: #333; cursor: not-allowed; color: #666; }
+
+    .progress-bar-wrap {
+      background: #1e1e1e;
+      border-radius: 999px;
+      height: 6px;
+      margin: 20px 0 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      background: #6366f1;
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-label { font-size: 13px; color: #666; margin-bottom: 20px; display: none; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .summary-card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .summary-card .num {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .summary-card .label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+    .summary-card.listed .num { color: #22c55e; }
+    .summary-card.missing .num { color: #ef4444; }
+    .summary-card.error .num { color: #888; }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      display: none;
+    }
+
+    .filter-tab {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #aaa;
+      transition: all 0.15s;
+    }
+
+    .filter-tab.active { background: #6366f1; border-color: #6366f1; color: white; }
+
+    .results-grid { display: none; gap: 10px; flex-direction: column; }
+
+    .result-item {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot.listed { background: #22c55e; box-shadow: 0 0 8px #22c55e66; }
+    .status-dot.not_found { background: #ef4444; }
+    .status-dot.error { background: #555; }
+    .status-dot.checking { background: #6366f1; animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .result-info { flex: 1; min-width: 0; }
+    .result-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+    .result-cat { font-size: 12px; color: #666; }
+
+    .result-right { text-align: right; flex-shrink: 0; }
+    .result-status { font-size: 13px; font-weight: 600; }
+    .result-status.listed { color: #22c55e; }
+    .result-status.not_found { color: #ef4444; }
+    .result-status.error { color: #555; }
+
+    .result-link {
+      font-size: 11px;
+      color: #6366f1;
+      text-decoration: none;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .result-link:hover { text-decoration: underline; }
+
+    .check-link {
+      font-size: 11px;
+      color: #555;
+      text-decoration: none;
+    }
+
+    .check-link:hover { color: #888; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Opus <span>Scanner</span></div>
+    <div class="badge">Citation Checker</div>
+  </header>
+
+  <div class="container">
+    <div class="search-card">
+      <h1>Directory Citation Scanner</h1>
+      <p class="subtitle">Check where your client is listed across the web — instantly.</p>
+
+      <div class="form-row">
+        <input id="businessName" type="text" placeholder="Business name (e.g. Moss Immigration Law)" />
+        <input id="location" type="text" placeholder="Location (e.g. Boise, ID)" />
+      </div>
+
+      <div class="categories" id="categories"></div>
+
+      <button id="scanBtn" onclick="startScan()">🔍 Scan Directories</button>
+
+      <div class="progress-bar-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+
+    <div class="summary-grid" id="summaryGrid">
+      <div class="summary-card listed">
+        <div class="num" id="countListed">0</div>
+        <div class="label">✅ Listed</div>
+      </div>
+      <div class="summary-card missing">
+        <div class="num" id="countMissing">0</div>
+        <div class="label">❌ Not Found</div>
+      </div>
+      <div class="summary-card error">
+        <div class="num" id="countError">0</div>
+        <div class="label">⚠️ Couldn't Check</div>
+      </div>
+    </div>
+
+    <div class="filter-tabs" id="filterTabs">
+      <div class="filter-tab active" onclick="filterResults('all')">All</div>
+      <div class="filter-tab" onclick="filterResults('listed')">✅ Listed</div>
+      <div class="filter-tab" onclick="filterResults('not_found')">❌ Missing</div>
+    </div>
+
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+
+  <script>
+    const CATEGORIES = ['General', 'Legal', 'Medical', 'Wedding/Venue'];
+    let activeCategories = [];
+    let allResults = [];
+    let currentFilter = 'all';
+
+    // Render category chips
+    const catContainer = document.getElementById('categories');
+    CATEGORIES.forEach(cat => {
+      const chip = document.createElement('div');
+      chip.className = 'cat-chip';
+      chip.textContent = cat;
+      chip.onclick = () => {
+        chip.classList.toggle('active');
+        if (activeCategories.includes(cat)) {
+          activeCategories = activeCategories.filter(c => c !== cat);
+        } else {
+          activeCategories.push(cat);
+        }
+      };
+      catContainer.appendChild(chip);
+    });
+
+    function filterResults(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      renderResults();
+    }
+
+    function renderResults() {
+      const grid = document.getElementById('resultsGrid');
+      const filtered = currentFilter === 'all' ? allResults : allResults.filter(r => r.status === currentFilter);
+      grid.innerHTML = '';
+      filtered.forEach(r => grid.appendChild(createResultEl(r)));
+    }
+
+    function createResultEl(result) {
+      const el = document.createElement('div');
+      el.className = 'result-item';
+      el.dataset.status = result.status;
+
+      const statusLabel = result.status === 'listed' ? '✅ Listed' : result.status === 'not_found' ? '❌ Not Found' : '⚠️ Error';
+
+      el.innerHTML = `
+        <div class="status-dot ${result.status}"></div>
+        <div class="result-info">
+          <div class="result-name">${result.name}</div>
+          <div class="result-cat">${result.category}</div>
+        </div>
+        <div class="result-right">
+          <div class="result-status ${result.status}">${statusLabel}</div>
+          ${result.liveUrl ? `<a class="result-link" href="${result.liveUrl}" target="_blank">View listing ↗</a>` : `<a class="check-link" href="${result.searchUrl}" target="_blank">Search manually ↗</a>`}
+        </div>
+      `;
+      return el;
+    }
+
+    async function startScan() {
+      const businessName = document.getElementById('businessName').value.trim();
+      const location = document.getElementById('location').value.trim();
+
+      if (!businessName || !location) {
+        alert('Please enter both a business name and location.');
+        return;
+      }
+
+      // Reset
+      allResults = [];
+      document.getElementById('resultsGrid').innerHTML = '';
+      document.getElementById('resultsGrid').style.display = 'flex';
+      document.getElementById('summaryGrid').style.display = 'grid';
+      document.getElementById('filterTabs').style.display = 'flex';
+      document.getElementById('progressWrap').style.display = 'block';
+      document.getElementById('progressLabel').style.display = 'block';
+      document.getElementById('countListed').textContent = '0';
+      document.getElementById('countMissing').textContent = '0';
+      document.getElementById('countError').textContent = '0';
+
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Scanning...';
+
+      let total = 0, done = 0;
+
+      const resp = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessName, location, categories: activeCategories }),
+      });
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done: streamDone, value } = await reader.read();
+        if (streamDone) break;
+
+        const text = decoder.decode(value);
+        const lines = text.split('\n').filter(l => l.startsWith('data: '));
+
+        for (const line of lines) {
+          const data = JSON.parse(line.slice(6));
+
+          if (data.type === 'start') {
+            total = data.total;
+          } else if (data.type === 'result') {
+            done++;
+            const r = data.result;
+            allResults.push(r);
+
+            // Update counts
+            const listed = allResults.filter(x => x.status === 'listed').length;
+            const missing = allResults.filter(x => x.status === 'not_found').length;
+            const errors = allResults.filter(x => x.status === 'error').length;
+            document.getElementById('countListed').textContent = listed;
+            document.getElementById('countMissing').textContent = missing;
+            document.getElementById('countError').textContent = errors;
+
+            // Progress
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressLabel').textContent = `Checking ${done} of ${total} directories...`;
+
+            // Add to grid
+            const el = createResultEl(r);
+            if (currentFilter === 'all' || r.status === currentFilter) {
+              document.getElementById('resultsGrid').appendChild(el);
+            }
+          } else if (data.type === 'done') {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressLabel').textContent = `Scan complete — ${data.summary.listed} listed, ${data.summary.not_found} not found`;
+            btn.disabled = false;
+            btn.textContent = '🔍 Scan Again';
+          }
+        }
+      }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') startScan();
+    });
+  </script>
+</body>
+</html>
